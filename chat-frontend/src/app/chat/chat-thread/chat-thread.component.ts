@@ -2,6 +2,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../services/message.service';
+import { ChatMessage } from './chat-message/chat-message.interface';
 
 @Component({
   selector: 'app-chat-thread',
@@ -9,19 +10,26 @@ import { MessageService } from '../services/message.service';
   styleUrls: ['./chat-thread.component.scss']
 })
 export class ChatThreadComponent {
-  // chatId!: number;
-  messages: any[] = [];
+  chatId!: string;
+
+  userId!: string;
+
+  messages: ChatMessage[] = [];
 
 
   constructor(
     private route: ActivatedRoute,
     private messageService: MessageService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    // this.route.params.subscribe(params => {
-    //   this.chatId = +params['id'];
-    // });
+    this.route.params.subscribe(params => {
+      if (!this.chatId) {
+        this.chatId = params['chatId'];
+        this.userId = this.generateRandomId();
+      }
+    });
 
     this.messageService.getMessages().subscribe((newMessages: any[]) => {
       this.messages = newMessages;
@@ -30,22 +38,30 @@ export class ChatThreadComponent {
     this.messageService.newMessageReceived().subscribe(msg => {
       if (msg) {
         console.log('new message', msg);
-        this.messages.push(msg); // Append new message
+        this.messages.unshift(msg);
       }
       
     });
   }
 
+  ngAfterViewInit() {
+    this.messageService.loadMessages(this.chatId);
+  }
+
   sendMessage(content: string) {
-    const message = { message: content };
-    this.messageService.sendMessage(message);
+    const message: ChatMessage = { senderId: this.userId, content };
+    this.messageService.sendMessage(this.chatId, message);
   }
 
   clearChat() {
-    this.messageService.clearChat();
+    this.messageService.clearChat(this.chatId);
   }
 
-  ngAfterViewInit() {
-    this.messageService.loadMessages();
-  }
+  generateRandomId(): string {
+    // Generate a random number between 0 and 99999
+    const randomNumber = Math.floor(Math.random() * 100000);
+    // Convert to string and pad with leading zeros if necessary
+    return randomNumber.toString().padStart(5, '0');
+}
+
 }

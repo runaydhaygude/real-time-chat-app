@@ -9,8 +9,7 @@ const routes: Routes = [
     path: 'chat',
     component: ChatLayoutComponent,
     children: [
-      // { path: '', redirectTo: 'id', pathMatch: 'full' },
-      { path: '', component: ChatThreadComponent }
+      { path: ':chatId', component: ChatThreadComponent }
     ]
   }
 ];

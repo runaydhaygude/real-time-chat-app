@@ -13,17 +13,17 @@ export class StorageService {
     }
   });
 
-  async storeMessage(msg: any) {
+  async storeMessage(chatId: string, msg: any) {
     const db = await this.dbPromise;
     await db.add('messages', { content: msg.content, timestamp: new Date() });
   }
 
-  async loadMessages() {
+  async loadMessages(chatId: string) {
     const db = await this.dbPromise;
     return await db.getAll('messages');
   }
 
-  async clearMessages() {
+  async clearMessages(chatId:string) {
     const db = await this.dbPromise;
     await db.transaction('messages', 'readwrite').objectStore('messages').clear();
   }

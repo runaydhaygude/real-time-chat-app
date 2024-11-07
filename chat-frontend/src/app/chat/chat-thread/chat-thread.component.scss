@@ -1,0 +1,23 @@
+
+.chat-thread-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    padding: 5rem;
+
+    .clear-chat {
+        justify-content: flex-end;
+    }
+
+    .chat-messages {
+        flex: 1;
+        display: flex;
+        flex-direction: column-reverse;
+        overflow-y: auto;
+    }
+
+    .chat-input {
+        height: 20%;
+    }
+}

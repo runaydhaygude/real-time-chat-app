@@ -4,9 +4,8 @@ import { ChatLayoutComponent } from './chat/chat-layout/chat-layout.component';
 import { ChatThreadComponent } from './chat/chat-thread/chat-thread.component';
 
 const routes: Routes = [
-  { path: 'chat', component: ChatThreadComponent },
-  { path: '', redirectTo: '/chat', pathMatch: 'full' },
-  { path: '**', redirectTo: '/chat' }
+  { path: '', redirectTo: '/chat/default', pathMatch: 'full' },
+  { path: '**', redirectTo: '/chat/default' }
 ];
 
 @NgModule({

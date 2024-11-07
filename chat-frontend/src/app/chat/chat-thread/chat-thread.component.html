@@ -1,12 +1,18 @@
-<div>
-    <h2>Chat Messages </h2>
-    
-    <div *ngFor="let message of messages">
-      <p>{{ message.content }}</p>
+<div class="chat-thread-container">
+
+    <div class="clear-chat">
+        <button class = "chat-send-button" (click)="clearChat()">Clear Chat</button>
     </div>
-  
-    <input #messageInput type="text" placeholder="Type a message">
-    <button (click)="sendMessage(messageInput.value)">Send</button>
-    <button (click)="clearChat()">Clear Chat</button>
+    
+    <div class="chat-messages">
+        <div class="chat-message" *ngFor="let message of messages">
+            <app-chat-message [message]="message" [isSelfMessage]="message.senderId === userId"></app-chat-message>
+          </div>
+    </div>
+
+
+    <div class="chat-input">
+        <app-chat-input (messageSent) = sendMessage($event)></app-chat-input>
+    </div>
   </div>
   
