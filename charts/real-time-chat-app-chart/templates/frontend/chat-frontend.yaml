@@ -1,0 +1,42 @@
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-frontend-deployment
+  labels:
+    app: chat-frontend
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1  # Number of desired pods
+  selector:
+    matchLabels:
+      app: chat-frontend
+  template:
+    metadata:
+      labels:
+        app: chat-frontend
+    spec:
+      containers:
+      - name: chat-frontend
+        image: runaydhaygude/chat-frontend:amd64  # Replace with your image name
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80  # Nginx listens on port 80
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-frontend-service
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4200         # Port exposed by the service
+    targetPort: 80   # Port on the container
+  selector:
+    app: chat-frontend  # Match the pods labeled with app: angular-app

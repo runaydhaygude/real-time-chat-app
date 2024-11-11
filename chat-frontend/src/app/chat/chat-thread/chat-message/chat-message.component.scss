@@ -1,0 +1,22 @@
+
+.chat-message-container {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0.5rem;
+}
+
+.chat-message-container-for-self {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0.5rem;
+}
+
+.chat-message-content {
+    padding: 0.5rem;
+
+    font-family: Roboto;
+
+    background-color: rgb(230, 230, 230);
+
+    border-radius: 0.5rem;
+}

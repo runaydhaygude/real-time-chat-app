@@ -7,6 +7,7 @@ import * as Stomp from '@stomp/stompjs';
 import { RxStompService, StompConfig, StompRService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 import { ChatMessage } from '../chat-thread/chat-message/chat-message.interface';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,10 @@ export class MessageService {
   private messagesSubject = new BehaviorSubject<any[]>([]);
   private newMessageSubject = new BehaviorSubject<any>(null);
 
-  constructor(private storageService: StorageService, private stompService: StompRService) {
-    
-  }
+  constructor(
+    private storageService: StorageService,
+    private stompService: StompRService,
+    private configService: ConfigService) {}
 
 
   private init(chatId: string): void {
@@ -29,7 +31,7 @@ export class MessageService {
 
       this.stompService.initAndConnect();
 
-      this.stompService.subscribe('/topic/chat/' + chatId).subscribe((message: any) => {
+      this.stompService.subscribe('/ws/topic/chat/' + chatId).subscribe((message: any) => {
         const msg: ChatMessage = JSON.parse(message.body);
         this.handleNewMessage(chatId, msg);
       });
@@ -38,8 +40,9 @@ export class MessageService {
 
 
   private stompConfig(): StompConfig {
+    const wsStompEndpoint = `${this.configService.apiHost}/ws/websocket-connection`;
     const provider = function() {
-      return new SockJS('http://localhost:8080/websocket-connection');
+      return new SockJS(wsStompEndpoint);
     };
 
     const config = new StompConfig();
@@ -72,7 +75,7 @@ export class MessageService {
   }
 
   public sendMessage(chatId: string, message: any) {
-    this.stompService.publish('/app/chat/' + chatId, JSON.stringify(message));
+    this.stompService.publish('/ws/app/chat/' + chatId, JSON.stringify(message));
   }
 
   public clearChat(chatId: string) {
