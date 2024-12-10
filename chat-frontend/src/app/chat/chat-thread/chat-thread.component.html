@@ -6,7 +6,7 @@
     
     <div class="chat-messages">
         <div class="chat-message" *ngFor="let message of messages">
-            <app-chat-message [message]="message" [isSelfMessage]="message.senderId === userId"></app-chat-message>
+            <app-chat-message [message]="message" [isSelfMessage]="message.senderId === user.userId"></app-chat-message>
           </div>
     </div>
 

@@ -6,7 +6,7 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from '@stomp/stompjs';
 import { RxStompService, StompConfig, StompRService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
-import { ChatMessage } from '../chat-thread/chat-message/chat-message.interface';
+import { ChatMessage } from '../helper/interfaces/chat-message.interface';
 import { ConfigService } from 'src/app/services/config.service';
 
 @Injectable({
@@ -14,7 +14,6 @@ import { ConfigService } from 'src/app/services/config.service';
 })
 export class MessageService {
 
-  private stompClient: any;
   private messagesSubject = new BehaviorSubject<any[]>([]);
   private newMessageSubject = new BehaviorSubject<any>(null);
 
@@ -61,7 +60,9 @@ export class MessageService {
 
   public async loadMessages(chatId: string) {
     const messages = await this.storageService.loadMessages(chatId);
-    this.messagesSubject.next(messages);
+    if (messages) {
+      this.messagesSubject.next(messages);
+    }
 
     this.init(chatId);
   }

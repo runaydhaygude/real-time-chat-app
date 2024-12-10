@@ -20,6 +20,7 @@ public class ChatController {
 
     @MessageMapping("/chat/{chatId}")
     public void handleChatMessage(@DestinationVariable String chatId, ChatMessage message) {
+
         System.out.print(message);
         simpMessagingTemplate.convertAndSend(contextPath + "/topic/chat/" + chatId, message);
     }

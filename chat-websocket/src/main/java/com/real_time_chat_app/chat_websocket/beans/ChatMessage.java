@@ -8,6 +8,8 @@ public class ChatMessage {
 
     private String content;
 
+    private String podName;
+
 
 
     public String getSenderId() {
@@ -32,5 +34,13 @@ public class ChatMessage {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getPodName() {
+        return podName;
+    }
+
+    public void setPodName(String podName) {
+        this.podName = podName;
     }
 }

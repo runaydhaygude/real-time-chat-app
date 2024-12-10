@@ -1,4 +1,7 @@
 <div [ngClass]="{'chat-message-container-for-self': isSelfMessage, 'chat-message-container': !isSelfMessage}">
+    <div class="chat-message-sender" *ngIf="!isSelfMessage">
+        {{ message.senderName }}
+    </div>
     <div class="chat-message-content">
         {{ message.content }}
     </div>

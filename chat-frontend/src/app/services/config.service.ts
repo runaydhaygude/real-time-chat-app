@@ -18,7 +18,7 @@ export class ConfigService {
 
   // Method to get the API host
   get apiHost(): string {
-    return window.location.origin;
+    return 'http://localhost:8080'; // window.location.origin;
   }
 
   // Method to set the configuration

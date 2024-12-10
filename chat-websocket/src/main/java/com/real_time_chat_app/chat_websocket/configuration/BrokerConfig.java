@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 public class BrokerConfig {
 
-    private boolean useExternalBroker = true;
+    private boolean useExternalBroker = false;
     private String externalBrokerHost = "localhost";
     private int externalBrokerPort = 61613;
     private String externalBrokerClientLogin = "guest";

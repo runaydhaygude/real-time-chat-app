@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: chat-frontend-ingress
-  namespace: {{ .Values.namespace }}
+  namespace: chat
 spec:
   ingressClassName: nginx  # Specifies the Ingress controller to use
   rules:
@@ -13,7 +13,7 @@ spec:
         backend:
           service:
             name: chat-frontend-service
-            namespace: {{ .Values.namespace }}
+            # namespace: chat
             port:
               number: 4200  # The port exposed by the chat-frontend-service
       - path: /ws
@@ -21,7 +21,7 @@ spec:
         backend:
           service:
             name: chat-websocket-service
-            namespace: {{ .Values.namespace }}
+            # namespace: chat
             port:
               number: 8080
       
