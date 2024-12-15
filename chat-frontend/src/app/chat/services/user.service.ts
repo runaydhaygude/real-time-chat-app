@@ -26,4 +26,8 @@ export class UserService {
       });
     }
   }
+
+  async createChatGroup() {
+    return this.apiService.createChatGroup();
+  }
 }

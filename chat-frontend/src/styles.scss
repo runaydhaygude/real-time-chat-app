@@ -1,4 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import './app/chat//chat-menu/styles/menu-variables.scss';
+@import './app/chat//chat-thread/styles/thread-variables.scss';
+
 
 html, body {
   height: 100%;

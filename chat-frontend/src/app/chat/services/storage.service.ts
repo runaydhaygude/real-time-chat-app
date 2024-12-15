@@ -71,7 +71,7 @@ export class StorageService {
     const chatGroup = await db.get('ChatGroups', chatId);
 
     if (chatGroup) {
-      chatGroup.messages.push(msg);
+      chatGroup.messages.unshift(msg);
       await db.put('ChatGroups', chatGroup);
     } else {
       await db.add('ChatGroups', { chatId, messages: [msg] });
