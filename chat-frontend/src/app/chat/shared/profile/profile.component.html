@@ -1,0 +1,13 @@
+<div class="user-name-container">
+    <input
+      id="username"
+      class="username-input"
+      [(ngModel)]="userName"
+      placeholder="Type Your Username..."
+      (keyup.enter)="submitUserName()"
+    />
+    <button class="username-submit-button" (click)="submitUserName()">
+      Update Username
+    </button>
+  </div>
+  

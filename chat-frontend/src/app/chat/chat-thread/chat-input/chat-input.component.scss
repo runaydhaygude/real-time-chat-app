@@ -12,7 +12,8 @@
       font-size: 0.875rem;
       color: $thread-text-color;
       background-color: $thread-input-bg-color;
-      border: 1px solid $thread-input-border-color;
+      border: 0;
+      border-bottom: 1px solid $thread-input-bg-color;
       border-radius: 0.25rem;
   
       &::placeholder {

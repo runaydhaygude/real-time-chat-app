@@ -15,10 +15,10 @@ export class StorageService {
 
   constructor() {
     this.dbPromise = this.openDatabase();
-    console.log('Storage service initialized');
   }
 
   private async openDatabase(): Promise<IDBPDatabase<ChatDB>> {
+    console.log('Storage initialized');
 
     return openDB<ChatDB>('ChatDB', this.dbVersion, {
       upgrade(db) {
@@ -73,18 +73,42 @@ export class StorageService {
     if (chatGroup) {
       chatGroup.messages.unshift(msg);
       await db.put('ChatGroups', chatGroup);
-    } else {
-      await db.add('ChatGroups', { chatId, messages: [msg] });
     }
   }
 
-  async loadMessages(chatId: string) {
+  async getChatGroups() {
+    const db = await this.dbPromise;
+    const chatGroups = await db.getAll('ChatGroups');
+    return chatGroups.sort((a, b) => b.createdAt - a.createdAt);
+  }
+
+  async getChatGroup(chatId: string) {
+    const db = await this.dbPromise;
+    return await db.get('ChatGroups', chatId);
+  }
+
+  async addNewChatGroup(chatId: string, chatName: string) {
+    const db = await this.dbPromise;
+
+    if (chatId) {
+      const createdAt = Date.now();
+      await db.add('ChatGroups', { chatId, chatName, createdAt, messages: [] });
+    }
+  }
+
+  async deleteChatGroup(chatId: string) {
+    const db = await this.dbPromise;
+    await db.delete('ChatGroups', chatId);
+  }
+
+  async loadMessages(chatId: string, chatName: string) {
     const db = await this.dbPromise;
 
     const chatGroup = await db.get('ChatGroups', chatId);
 
     if (!chatGroup) {
-      await db.add('ChatGroups', { chatId, messages: [] });
+      const createdAt = Date.now();
+      await db.add('ChatGroups', { chatId, chatName, createdAt, messages: [] });
     }
 
     return await db.get('ChatGroups', chatId).then(chatGroup => chatGroup?.messages);;

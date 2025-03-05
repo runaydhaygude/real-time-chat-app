@@ -1,0 +1,21 @@
+<div class="container">
+    <input
+      id="chatid"
+      class="input"
+      [(ngModel)]="chatId"
+      placeholder="Enter The Chat ID"
+      (keyup.enter)="submit()"
+    />
+
+    <label for="chatname" class="label">Or else</label>
+
+    <input
+      id="chatname"
+      class="input"
+      [(ngModel)]="chatName"
+      placeholder="Type Your New Chat Name"
+      (keyup.enter)="submit()"
+    />
+
+    <button class="submit-button" (click)="submit()"> Open Chat </button>
+  </div>

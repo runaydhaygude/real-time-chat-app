@@ -5,6 +5,8 @@ import { MessageService } from '../services/message.service';
 import { ChatMessage } from '../helper/interfaces/chat-message.interface';
 import { UserService } from '../services/user.service';
 import { ChatUser } from '../helper/interfaces/chat-user.interface';
+import { MessageType } from '../helper/beans/message-type.enum';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-thread',
@@ -12,78 +14,102 @@ import { ChatUser } from '../helper/interfaces/chat-user.interface';
   styleUrls: ['./chat-thread.component.scss']
 })
 export class ChatThreadComponent {
+
   chatId!: string;
+  chatIdSubscription: Subscription = undefined as any;
 
   user!: ChatUser;
+  userUpdateSubscription: Subscription = undefined as any;
 
   messages: ChatMessage[] = [];
+  messagesSubscription: Subscription = undefined as any;
+  newMessagesSubscription: Subscription = undefined as any;
 
 
   constructor(
     private route: ActivatedRoute,
     private messageService: MessageService,
     private userService: UserService
-  ) {
-    console.log('thread constructor service initialized');
-  }
+  ) {}
 
   ngOnInit() {
 
-    this.route.params.subscribe(params => {
-      if (!this.chatId) {
-        this.chatId = params['chatId'];
+    this.chatIdSubscription = this.route.params.subscribe(params => {
+      const nextChatId = params['chatId'];
+      if (nextChatId) {
+        const currentChatId = this.chatId;
+        this.chatId = nextChatId;
+        this.initializeThread(currentChatId);
       }
     });
 
-    this.messageService.getMessages().subscribe((newMessages: any[]) => {
+    this.messagesSubscription = this.messageService.getMessages().subscribe((newMessages: any[]) => {
       this.messages = newMessages;
     });
 
-    this.messageService.newMessageReceived().subscribe(msg => {
+    this.newMessagesSubscription = this.messageService.newMessageReceived().subscribe(msg => {
       if (msg) {
-        console.log('new message', msg);
-        this.messages.unshift(msg);
-      }
-      
+
+        const selfUserAction = msg.senderId === this.user.userId && msg.messageType === MessageType.USER_ACTION;
+
+        if (!selfUserAction) {
+          this.messages.unshift(msg);
+        }
+      } 
     });
 
-
-    this.initializeUser();
+    this.userUpdateSubscription = this.userService.getUserUpdate().subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    });
   }
 
-  ngAfterViewInit() {
-    console.log('thread afterview service initialized');
-    this.messageService.loadMessages(this.chatId);
+  ngOnDestroy() {
+    console.log('thread destroyed');
+    this.messageService.disconnect(this.chatId);
+
+    if (this.chatIdSubscription) {
+      this.chatIdSubscription.unsubscribe();
+    }
+    
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
+
+    if (this.newMessagesSubscription) {
+      this.newMessagesSubscription.unsubscribe();
+    }
+
+    if (this.userUpdateSubscription) {
+      this.userUpdateSubscription.unsubscribe();
+    }
   }
+
 
   async initializeUser() {
     const user = await this.userService.getUser();
-    if (!user) {
-      this.user = {
-        userId: this.generateRandomId(),
-        userName: 'Guest'
-      }
-
-      return;
+    if (user) {
+      this.user = user;
+    } else {
+      console.error('User is null or undefined');
     }
-
-    this.user = user;
   }
+
+  async initializeThread(currentChatId: string) {
+    await this.userService.setupChatGroup(this.chatId);
+    this.messageService.loadMessages(currentChatId, this.chatId);
+    this.initializeUser();
+  }
+
 
   sendMessage(content: string) {
-    const message: ChatMessage = { senderId: this.user.userId, senderName: this.user.userName, content };
+    const message: ChatMessage = {
+      senderId: this.user.userId,
+      senderName: this.user.userName,
+      messageType: MessageType.CHAT,
+      content
+    };
     this.messageService.sendMessage(this.chatId, message);
   }
-
-  clearChat() {
-    this.messageService.clearChat(this.chatId);
-  }
-
-  generateRandomId(): string {
-    // Generate a random number between 0 and 99999
-    const randomNumber = Math.floor(Math.random() * 100000);
-    // Convert to string and pad with leading zeros if necessary
-    return randomNumber.toString().padStart(5, '0');
-}
-
 }

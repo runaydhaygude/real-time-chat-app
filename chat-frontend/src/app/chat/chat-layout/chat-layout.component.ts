@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-layout',
@@ -6,15 +8,21 @@ import { Component } from '@angular/core';
   styleUrls: ['./chat-layout.component.scss']
 })
 export class ChatLayoutComponent {
-  constructor() {
-    console.log('layout const service initialized');
-  }
+
+  chatId: string | null = null;
+  chatIdSubscription: Subscription = undefined as any;
+  
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    console.log('layout ngonit service initialized');
+    this.chatIdSubscription = this.route.paramMap.subscribe(params => {
+      this.chatId = params.get('chatId');
+    });
   }
 
-  ngAfterViewInit() {
-    console.log('layout afterview service initialized');
+  ngOnDestroy() {
+    if (this.chatIdSubscription) {
+      this.chatIdSubscription.unsubscribe();
+    }
   }
 }

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev
+  namespace: {{ .Values.namespace }}-dev
+  annotations:
+    "helm.sh/hook": pre-install
+spec:
+  hard:
+    requests.cpu: 0.8
+    requests.memory: 80Mi
+    limits.cpu: 1
+    limits.memory: 330Mi
+    pods: 10
+    services.nodeports: "0"

@@ -1,0 +1,46 @@
+.user-name-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: #202020;
+    border: 1px solid #4a4a4a;
+    color: #eaeaea;
+    width: 300px;
+    margin: 0 auto;
+  
+    .username-input {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      color: #eaeaea;
+      background-color: #2e2e2e;
+      border: 1px solid #4a4a4a;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+  
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  
+    .username-submit-button {
+      background-color: #4a4a4a;
+      color: #eaeaea;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+  
+      &:hover {
+        background-color: #555555;
+      }
+  
+      &:active {
+        background-color: #666666;
+      }
+    }
+  }
+  

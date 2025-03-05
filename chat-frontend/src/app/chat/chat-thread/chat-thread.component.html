@@ -1,9 +1,16 @@
 <div class="chat-thread-container">
-    
-    <div class="chat-messages">
+    <div class="chat-messages" *ngIf="messages && messages.length > 0">
         <div class="chat-message" *ngFor="let message of messages">
             <app-chat-message [message]="message" [isSelfMessage]="message.senderId === user.userId"></app-chat-message>
           </div>
+    </div>
+
+    <div class="chat-messages" *ngIf="!messages || messages.length === 0">
+        <div class="new-chat-message-wrapper">
+            <div class="new-chat-message">
+                {{ 'Type a message! ' }}
+            </div>
+        </div>
     </div>
 
 

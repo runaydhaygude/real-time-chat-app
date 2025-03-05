@@ -1,0 +1,40 @@
+<div class="chat-menu-container">
+ <div class="chat-home-keys">
+    <div class="user-profile" (click)="updateProfile()">
+      <div class="user-profile-picture"></div>
+      <div class="user-name"> {{ user.userName }} </div>
+    </div>
+    
+    <button class = "home-key-button" (click)="newChat()">New Chat</button>
+ </div>
+
+ <div class="chat-history">
+   <div class="chat-title">All chats</div>
+    <div class="chat-thread-container" *ngFor="let chat of chats"
+    [ngStyle]="{'border': chatIdSelected === chat.chatId ? '1px solid white' : '1px solid #2A2A2A'}">
+      <div class="chat-thread"
+      (click)="openChat(chat.chatId)">
+        <div class="chat-thread-name">
+          {{ chat.chatName}}
+        </div>
+        <div class="chat-thread-id">
+          {{ chat.chatId }}
+        </div>
+      </div>
+      <div class="copy-chat-id">
+        <button class = "copy-chat-id-button" (click)="copyChatIdToClipboard(chat.chatId)">
+          <i class="fas fa-copy"></i>
+          <span class="tooltiptext">Copy Chat ID</span>
+        </button>
+      </div>
+
+      <div class="clear-chat">
+        <button class = "chat-clear-button"
+        (click)="deleteChat(chat.chatId)">
+          <i class="fas fa-xmark"></i>
+          <span class="tooltiptext">Delete Chat</span>
+        </button>
+      </div>
+    </div>
+ </div>
+</div>

@@ -1,8 +1,10 @@
+
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: chat-frontend-ingress
-  namespace: chat
+  namespace: {{ .Values.namespace }}
 spec:
   ingressClassName: nginx  # Specifies the Ingress controller to use
   rules:

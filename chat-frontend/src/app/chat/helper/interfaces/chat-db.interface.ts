@@ -5,7 +5,11 @@ import { ChatUser } from "./chat-user.interface";
 export interface ChatDB extends DBSchema {
     ChatGroups: {
         key: string;
-        value: { chatId: string; messages: ChatMessage[] };
+        value: {
+                chatId: string;
+                chatName: string,
+                createdAt: number,
+                messages: ChatMessage[] };
     };
 
     Users: {

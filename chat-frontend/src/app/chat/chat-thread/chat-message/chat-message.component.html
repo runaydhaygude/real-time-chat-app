@@ -1,8 +1,25 @@
-<div [ngClass]="{'chat-message-container-for-self': isSelfMessage, 'chat-message-container': !isSelfMessage}">
-    <div class="chat-message-sender" *ngIf="!isSelfMessage">
-        {{ message.senderName }}
-    </div>
-    <div class="chat-message-content">
+
+<div class="user-action-container" *ngIf="!isSelfMessage && message.messageType === MessageType.USER_ACTION">
+    <div class="user-action">
         {{ message.content }}
+    </div>
+</div>
+
+<div class = "chat-message-container-wrapper-for-self" *ngIf="isSelfMessage && message.messageType === MessageType.CHAT">
+    <div class="chat-message-container">
+        <div class="chat-message-content">
+            {{ message.content }}
+        </div>
+    </div>
+</div>
+
+<div class = "chat-message-container-wrapper" *ngIf="!isSelfMessage && message.messageType === MessageType.CHAT">
+    <div class="chat-message-container">
+        <div class="chat-message-sender">
+            {{ message.senderName }}
+        </div>
+        <div class="chat-message-content">
+            {{ message.content }}
+        </div>
     </div>
 </div>

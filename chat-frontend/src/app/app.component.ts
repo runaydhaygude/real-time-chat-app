@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { StorageService } from './chat/services/storage.service';
-import { ApiService } from './chat/services/api.service';
 import { UserService } from './chat/services/user.service';
 
 @Component({
@@ -11,9 +9,16 @@ import { UserService } from './chat/services/user.service';
 export class AppComponent {
   title = 'chat-frontend';
 
-  constructor(private userService: UserService) {
-    this.userService.intializeUser();
-  }
+  constructor(private userService: UserService) {}
 
+  ngOnInit() {
+    this.initialize();
+  }
   
+
+  async initialize() {
+    this.userService.intializeUser();
+
+    this.userService.intializeChatGroup();
+  }
 }

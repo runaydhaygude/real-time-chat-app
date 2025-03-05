@@ -30,7 +30,6 @@ metadata:
     app: chat-websocket
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1  # Number of desired pods
   selector:
     matchLabels:
       app: chat-websocket
@@ -41,8 +40,15 @@ spec:
     spec:
       containers:
       - name: chat-websocket
-        image: runaydhaygude/external-broker-websocket:amd64  # Replace with your image name
+        image: runaydhaygude/simple-broker-websocket #:amd64  # Replace with your image name
         imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 80Mi
+            cpu: 0.1
+          requests:
+            memory: 80Mi
+            cpu: 0.1
         ports:
         - containerPort: 8080
         envFrom:
@@ -67,3 +73,31 @@ spec:
     targetPort: 8080   # Port on the container
   selector:
     app: chat-websocket  # Match the pods labeled with app: angular-app
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: chat-websocket-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: chat-websocket-deployment
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
