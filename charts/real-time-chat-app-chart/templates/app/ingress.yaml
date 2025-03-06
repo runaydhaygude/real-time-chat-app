@@ -15,7 +15,6 @@ spec:
         backend:
           service:
             name: chat-frontend-service
-            # namespace: chat
             port:
               number: 4200  # The port exposed by the chat-frontend-service
       - path: /ws
@@ -23,7 +22,13 @@ spec:
         backend:
           service:
             name: chat-websocket-service
-            # namespace: chat
+            port:
+              number: 8080
+      - path: /rest
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-user-management-service
             port:
               number: 8080
       

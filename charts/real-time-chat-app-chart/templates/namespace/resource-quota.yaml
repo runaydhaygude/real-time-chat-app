@@ -7,9 +7,9 @@ metadata:
     "helm.sh/hook": pre-install
 spec:
   hard:
-    requests.cpu: 0.8
-    requests.memory: 80Mi
-    limits.cpu: 1
-    limits.memory: 330Mi
+    requests.cpu: 2
+    requests.memory: 400Mi
+    limits.cpu: 2
+    limits.memory: 500Mi
     pods: 10
     services.nodeports: "0"

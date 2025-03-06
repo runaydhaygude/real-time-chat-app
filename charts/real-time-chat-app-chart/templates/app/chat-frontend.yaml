@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: chat-frontend
-        image: runaydhaygude/chat-frontend #:amd64  # Replace with your image name
+        image: runaydhaygude/chat-frontend:latest #:amd64  # Replace with your image name
         imagePullPolicy: Always
         ports:
         - containerPort: 80  # Nginx listens on port 80

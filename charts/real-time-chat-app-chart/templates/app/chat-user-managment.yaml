@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-user-management-deployment
+  labels:
+    app: chat-user-management
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: chat-user-management
+  template:
+    metadata:
+      labels:
+        app: chat-user-management
+    spec:
+      containers:
+      - name: chat-user-management
+        image: runaydhaygude/chat-user-management:latest #:amd64  # Replace with your image name
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 150Mi
+            cpu: 0.5
+          requests:
+            memory: 150Mi
+            cpu: 0.5
+        ports:
+        - containerPort: 8080
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-user-management-service
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080         # Port exposed by the service
+    targetPort: 8080   # Port on the container
+  selector:
+    app: chat-user-management  # Match the pods labeled with app: angular-app

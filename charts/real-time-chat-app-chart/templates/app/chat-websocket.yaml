@@ -4,9 +4,9 @@ metadata:
   name: websocket-config
   namespace: {{ .Values.namespace }}  # Ensure this matches the namespace you're using
 data:
-  EXTERNAL_BROKER_HOST: "http://rabbitmq"  # Example config for WebSocket host
+  EXTERNAL_BROKER_HOST: "rabbitmq-service"  # Example config for WebSocket host
   EXTERNAL_BROKER_PORT: "61613"
-  USE_EXTERNAL_BROKER: "false"   
+  USE_EXTERNAL_BROKER: "true"   
 
 ---
 
@@ -38,17 +38,21 @@ spec:
       labels:
         app: chat-websocket
     spec:
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: ['sh', '-c', 'until nc -z -v -w30 rabbitmq-service 61613; do echo "Waiting for RabbitMQ..."; sleep 5; done;']
       containers:
       - name: chat-websocket
-        image: runaydhaygude/simple-broker-websocket #:amd64  # Replace with your image name
+        image: runaydhaygude/chat-websocket:latest #:amd64  # Replace with your image name
         imagePullPolicy: Always
         resources:
           limits:
-            memory: 80Mi
-            cpu: 0.1
+            memory: 150Mi
+            cpu: 0.5
           requests:
-            memory: 80Mi
-            cpu: 0.1
+            memory: 150Mi
+            cpu: 0.5
         ports:
         - containerPort: 8080
         envFrom:
