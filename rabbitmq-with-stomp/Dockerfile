@@ -1,5 +1,5 @@
 # Use the official RabbitMQ image with the management plugin
-FROM rabbitmq:3.8-management
+FROM rabbitmq:3.11-management
 
 # Enable the desired RabbitMQ plugins
 RUN rabbitmq-plugins enable --offline rabbitmq_stomp

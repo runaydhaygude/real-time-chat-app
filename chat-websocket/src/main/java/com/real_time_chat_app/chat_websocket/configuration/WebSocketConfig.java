@@ -33,13 +33,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         if (!brokerConfig.isUseExternalBroker()) {
             System.out.println("Using in-memory broker");
-            config.enableSimpleBroker(contextPath + "/topic");
+            config.enableSimpleBroker("/topic");
             config.setApplicationDestinationPrefixes(contextPath + "/app");
             return;
         }
 
         System.out.println("Using external broker");
-        config.enableStompBrokerRelay(contextPath + "/topic", contextPath + "/queue")
+        config.enableStompBrokerRelay("/topic", "/queue")
                 .setRelayHost(brokerConfig.getExternalBrokerHost())
                 .setRelayPort(brokerConfig.getExternalBrokerPort())
                 .setClientLogin(brokerConfig.getExternalBrokerClientLogin())

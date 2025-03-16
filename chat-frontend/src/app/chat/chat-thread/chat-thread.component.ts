@@ -43,17 +43,20 @@ export class ChatThreadComponent {
       }
     });
 
-    this.messagesSubscription = this.messageService.getMessages().subscribe((newMessages: any[]) => {
-      this.messages = newMessages;
+    this.messagesSubscription = this.messageService.getMessages().subscribe((messageObject: any) => {
+      if (messageObject && messageObject.chatId === this.chatId) {
+        this.messages = messageObject.messages;
+      }
     });
 
-    this.newMessagesSubscription = this.messageService.newMessageReceived().subscribe(msg => {
-      if (msg) {
+    this.newMessagesSubscription = this.messageService.newMessageReceived().subscribe(messageObject => {
+      if (messageObject && messageObject.chatId === this.chatId) {
 
-        const selfUserAction = msg.senderId === this.user.userId && msg.messageType === MessageType.USER_ACTION;
+        const message = messageObject.message;
+        const selfUserAction = message.senderId === this.user.userId && message.messageType === MessageType.USER_ACTION;
 
         if (!selfUserAction) {
-          this.messages.unshift(msg);
+          this.messages.unshift(message);
         }
       } 
     });
@@ -67,7 +70,7 @@ export class ChatThreadComponent {
 
   ngOnDestroy() {
     console.log('thread destroyed');
-    this.messageService.disconnect(this.chatId);
+    // this.messageService.disconnect(this.chatId);
 
     if (this.chatIdSubscription) {
       this.chatIdSubscription.unsubscribe();
@@ -98,7 +101,7 @@ export class ChatThreadComponent {
 
   async initializeThread(currentChatId: string) {
     await this.userService.setupChatGroup(this.chatId);
-    this.messageService.loadMessages(currentChatId, this.chatId);
+    this.messageService.loadMessages(this.chatId);
     this.initializeUser();
   }
 

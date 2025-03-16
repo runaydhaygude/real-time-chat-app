@@ -69,6 +69,7 @@ export class ChatMenuComponent {
   }
 
   deleteChat(chatId: string) {
+    this.messageService.unsubscribe(chatId);
     this.userService.deleteChatGroup(chatId);
   }
 

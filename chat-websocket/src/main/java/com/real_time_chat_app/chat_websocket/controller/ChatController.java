@@ -21,8 +21,9 @@ public class ChatController {
     @MessageMapping("/chat/{chatId}")
     public void handleChatMessage(@DestinationVariable String chatId, ChatMessage message) {
 
-        System.out.println(message.getContent());
-        simpMessagingTemplate.convertAndSend(contextPath + "/topic/chat/" + chatId, message);
+        System.out.println("sending \"" + message.getContent() + "\" to chat-" + chatId);
+
+        simpMessagingTemplate.convertAndSend(  "/topic/chat-" + chatId, message);
     }
 
 }

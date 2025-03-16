@@ -51,14 +51,15 @@ export class UserService {
   }
 
   async intializeChatGroup() {
-    const chatGroup = await this.storageService.getChatGroups();
-    if (chatGroup && chatGroup.length > 0) {
-      await this.redirectToChat(chatGroup[0]?.chatId);
-      return;
+    const chatGroups = await this.storageService.getChatGroups();
+    if (chatGroups && chatGroups.length > 0) {
+      await this.redirectToChat(chatGroups[0]?.chatId);
+      return chatGroups;
     }
 
     const DEFAULT_CHAT_NAME = 'Default Chat';
     await this.createNewChat(DEFAULT_CHAT_NAME);
+    return null;
   }
   
   async createNewChat(chatName: string) {

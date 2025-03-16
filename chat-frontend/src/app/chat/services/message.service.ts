@@ -3,9 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { StorageService } from './storage.service';
 
 import * as SockJS from 'sockjs-client';
-import * as Stomp from '@stomp/stompjs';
-import { RxStompService, StompConfig, StompRService } from '@stomp/ng2-stompjs';
-import { Message } from '@stomp/stompjs';
+import { StompConfig, StompRService } from '@stomp/ng2-stompjs';
 import { ChatMessage } from '../helper/interfaces/chat-message.interface';
 import { ConfigService } from 'src/app/services/config.service';
 import { UserService } from './user.service';
@@ -16,69 +14,114 @@ import { MessageType } from '../helper/beans/message-type.enum';
 })
 export class MessageService {
 
-  private messagesSubject = new BehaviorSubject<any[]>([]);
+  private messagesSubject = new BehaviorSubject<any>([]);
   private newMessageSubject = new BehaviorSubject<any>(null);
 
-  private websocketSubscription: any;
+  private websocketSubscription: Map<string, any>;
+  private isConnecting: boolean = false;
+
+  apiUrl: string = 'http://localhost:8080/ws';
+  contextPath: string = '/ws';
 
   constructor(
     private storageService: StorageService,
     private stompService: StompRService,
     private configService: ConfigService,
     private userService: UserService
-  ) {}
-
-
-  private connect(chatId: string) {
-    console.log('connect ', chatId);
-    this.stompService.config = this.stompConfig();
-
-      this.stompService.initAndConnect();
-
-      this.sendUserConnectedMessage(chatId);
-
-      this.websocketSubscription = this.stompService.subscribe('/ws/topic/chat/' + chatId).subscribe((message: any) => {
-        const msg: ChatMessage = JSON.parse(message.body);
-        this.handleNewMessage(chatId, msg);
-      });
+  ) {
+    this.apiUrl = `${this.configService.apiHost}${this.contextPath}`;
+    this.websocketSubscription = new Map<string, any>()
   }
 
-  private disconnectAndReconnect(currentChatId: string, chatId: string): void {
-    console.log('disconnect with existing websocket connection for ', chatId);
-    
-    if (currentChatId) {
-      this.sendUserDisonnectedMessage(currentChatId);
+
+  async connect() {
+    if (this.stompService.connected()) {
+      console.log('already connected');
+      return;
     }
 
-    if (this.websocketSubscription) {
-      this.websocketSubscription.unsubscribe();
-      this.websocketSubscription = null;
+    if (this.isConnecting) {
+      console.log("Already trying to connect...");
+      return;
     }
-  
-    this.stompService.deactivate().then(() => {
-      this.connect(chatId);
-      console.log('connected with new websocket connection for ', chatId);
-    }).catch((error) => {
-      console.error('Error while disconnecting:', error);
+
+    if (this.stompService && this.stompService.state.getValue() === 3) {
+      console.log("Still deactivating, waiting before reconnecting...");
+      this.stompService.state.subscribe((state) => {
+        if (state === 0) { // 0 = CLOSED
+          this.connect();
+        }
+      });
+      return;
+    }
+
+    this.stompService.config = this.stompConfig();
+
+    this.isConnecting = true;
+    this.stompService.initAndConnect();
+  }
+
+  async connectAndSubscribeToAll(chatIds: string[]) {
+    await this.connect();
+
+    chatIds.forEach(chatId => {
+      this.subscribe(chatId);
     });
   }
 
-  public disconnect(chatId: string) {
-    this.sendUserDisonnectedMessage(chatId);
+  public async connectAndSubscribe(chatId: string) {
+    await this.connect();
+    this.subscribe(chatId);
+  }
 
-    if (this.websocketSubscription) {
-      this.websocketSubscription.unsubscribe();
-      this.websocketSubscription = null;
+  subscribe(chatId: string) {
+
+    if (this.websocketSubscription && this.websocketSubscription.has(chatId)) {
+      console.log('already subscribed');
+      return;
     }
 
+    const websocketSubscription = this.stompService.subscribe('/topic/chat-' + chatId).subscribe((message: any) => {
+      
+      const newlySubscribed = this.websocketSubscription && !this.websocketSubscription.has(chatId);
+      if (newlySubscribed) {
+        this.sendUserConnectedMessage(chatId);
+        return;
+      }
+
+      const msg: ChatMessage = JSON.parse(message.body);
+      this.handleNewMessage(chatId, msg);
+    });
+
+    this.websocketSubscription.set(chatId, websocketSubscription);
+  }
+
+  public disconnectAndUnsubscribeFromAll(chatIds: string[]) {
+    this.disconnect();
+    chatIds.forEach(chatId => {
+      this.unsubscribe(chatId);
+    });
+  }      
+
+  public disconnect() {
     this.stompService.deactivate().then(() => {
       console.log('disconnect with existing websocket connection');
     });
   }
 
+  public unsubscribe(chatId: string) {
+    this.sendUserDisonnectedMessage(chatId);
+
+    if (this.websocketSubscription && this.websocketSubscription.size > 0) {
+      this.websocketSubscription.forEach((subscription: any) => {
+        subscription.unsubscribe();
+      });
+    }
+  }        
+
 
   private stompConfig(): StompConfig {
-    const wsStompEndpoint = `${this.configService.apiHost}/ws/websocket-connection`;
+    const wsStompEndpoint = `${this.apiUrl}/websocket-connection`;
     const provider = function() {
       return new SockJS(wsStompEndpoint);
     };
@@ -94,17 +137,17 @@ export class MessageService {
 
   private async handleNewMessage(chatId: string, msg: any) {
     await this.storageService.storeMessage(chatId, msg);
-    this.newMessageSubject.next(msg);
+    this.newMessageSubject.next({chatId, message: msg});
   }
 
-  public async loadMessages(currentChatId: string, chatId: string) {
+  public async loadMessages(chatId: string) {
     const chatName = await this.userService.getChatName(chatId);
     const messages = await this.storageService.loadMessages(chatId, chatName + "");
     if (messages) {
-      this.messagesSubject.next(messages);
+      this.messagesSubject.next({chatId, messages});
     }
 
-    this.disconnectAndReconnect(currentChatId, chatId);
+    this.connectAndSubscribe(chatId);
   }
 
   getMessages() {
