@@ -8,15 +8,15 @@ metadata:
 spec:
   limits:
   - default:
-      memory: 150Mi
+      memory: 300Mi
       cpu: 0.5
     defaultRequest:
-      memory: 150Mi
+      memory: 300Mi
       cpu: 0.5
     max:
       memory: 300Mi
       cpu: 1
     min:
-      memory: 150Mi
+      memory: 300Mi
       cpu: 0.5
     type: Container

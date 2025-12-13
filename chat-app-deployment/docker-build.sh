@@ -15,15 +15,27 @@ if ! docker info > /dev/null 2>&1; then
   fi
 fi
 
+# Prompt the user to select a version
+echo "Select the architecture to build the image for:"
+echo "1) arm (default)"
+echo "2) amd64"
+read -p "Enter your choice (1 or 2): " choice
+
+if [ "$choice" == "1" ]; then
+    version="latest"
+elif [ "$choice" == "2" ]; then
+    version="amd64"
+else
+    version="latest"
+fi
+
 # Define services and their build contexts
 services=(
-    "chat-frontend ../chat-frontend npm"
-    "chat-user-management ../chat-user-management mvn"
+#    "chat-frontend ../chat-frontend npm"
+#    "chat-user-management ../chat-user-management mvn"
     "chat-websocket ../chat-websocket mvn"
-    "rabbitmq-with-stomp ../rabbitmq-with-stomp docker"
+#    "rabbitmq-with-stomp ../rabbitmq-with-stomp docker"
 )
-
-version="latest"
 
 for service in "${services[@]}"; do
     name=$(echo $service | cut -d ' ' -f1)

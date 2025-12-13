@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
       - name: chat-user-management
-        image: runaydhaygude/chat-user-management:latest #:amd64  # Replace with your image name
+        image: runaydhaygude/chat-user-management:{{ .Values.image.tag }}
         imagePullPolicy: Always
         resources:
           limits:
-            memory: 150Mi
+            memory: 300Mi
             cpu: 0.5
           requests:
-            memory: 150Mi
+            memory: 300Mi
             cpu: 0.5
         ports:
         - containerPort: 8080

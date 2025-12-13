@@ -1,5 +1,5 @@
 
-FROM openjdk:11-jre-slim
+FROM openjdk:11.0.11-jre-slim
 
 COPY /target/chat-user-management-0.0.1-SNAPSHOT.jar /usr/src/user-management-server/
 WORKDIR /usr/src/user-management-server

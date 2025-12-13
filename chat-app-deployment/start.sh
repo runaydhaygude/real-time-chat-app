@@ -14,4 +14,4 @@ helm repo update
 helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
 # Install Helm chart for the chat application
-helm install chat-app-release chat-app-deployment/chart --namespace chat
+helm install chat-app-release ./real-time-chat-app-chart --namespace chat --set image.tag="amd64"

@@ -5,6 +5,7 @@ metadata:
   namespace: {{ .Values.namespace }}  # Ensure this matches the namespace you're using
 data:
   RABBITMQ_DEFAULT_VHOST: /
+  USE_EXTERNAL_BROKER: "true"
 
 ---
 
@@ -40,7 +41,7 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: runaydhaygude/rabbitmq-with-stomp:latest #:amd64  # Replace with your image name
+        image: runaydhaygude/rabbitmq-with-stomp:{{ .Values.image.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 5672  # RabbitMQ main port

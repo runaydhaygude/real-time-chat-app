@@ -16,7 +16,7 @@ spec:
           service:
             name: chat-frontend-service
             port:
-              number: 4200  # The port exposed by the chat-frontend-service
+              number: 80  # The port exposed by the chat-frontend-service
       - path: /ws
         pathType: Prefix
         backend:

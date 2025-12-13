@@ -1,5 +1,5 @@
 
-FROM openjdk:11-jre-slim
+FROM openjdk:11.0.11-jre-slim
 
 COPY /target/chat-websocket-0.0.1-SNAPSHOT.jar /usr/src/websockets-server/
 WORKDIR /usr/src/websockets-server

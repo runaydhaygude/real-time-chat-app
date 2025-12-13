@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: chat-frontend
-        image: runaydhaygude/chat-frontend:latest #:amd64  # Replace with your image name
+        image: runaydhaygude/chat-frontend:{{ .Values.image.tag }}
         imagePullPolicy: Always
         ports:
         - containerPort: 80  # Nginx listens on port 80
@@ -36,7 +36,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 4200         # Port exposed by the service
+  - port: 80         # Port exposed by the service
     targetPort: 80   # Port on the container
   selector:
     app: chat-frontend  # Match the pods labeled with app: angular-app
