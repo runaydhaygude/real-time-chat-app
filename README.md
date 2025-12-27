@@ -7,7 +7,10 @@
    - `eksctl`
    - Helm
 
-2. Configure AWS CLI with an IAM role that has the necessary permissions for creating and managing EKS clusters.
+2. AWS access requirements:
+   - An IAM user or role with permissions to create and manage EKS clusters.
+   - AWS credentials are **not required to be preconfigured**.
+   - If credentials are not found, the deployment script will **prompt for AWS Access Key ID and Secret Access Key** and configure them automatically using AWS CLI.
 
 ## Deployment
 1. To create an EKS cluster and deploy the chat application using Helm, run the following script:
