@@ -40,7 +40,7 @@ eksctl create cluster \
 # Create the 'chat' namespace
 kubectl delete namespace chat --ignore-not-found
 kubectl create namespace chat
-# Create the 'chat' namespace
+# Create the 'ingress-nginx' namespace
 kubectl delete namespace ingress-nginx --ignore-not-found
 kubectl create namespace ingress-nginx
 

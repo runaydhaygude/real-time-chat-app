@@ -16,7 +16,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 type: Opaque
 data:
-  RABBITMQ_DEFAULT_USER: Z3Vlc3Q=  # Base64 encoded value for 'guest'
+  RABBITMQ_DEFAULT_USER: Z3Vlc3Q=  # Base64 encoded value for 'guest' #TODO - use Secrets
   RABBITMQ_DEFAULT_PASS: Z3Vlc3Q=  # Base64 encoded value for 'guest'
 
 

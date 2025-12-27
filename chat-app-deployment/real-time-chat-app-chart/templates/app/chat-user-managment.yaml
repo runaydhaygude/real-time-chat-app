@@ -43,4 +43,4 @@ spec:
   - port: 8080         # Port exposed by the service
     targetPort: 8080   # Port on the container
   selector:
-    app: chat-user-management  # Match the pods labeled with app: angular-app
+    app: chat-user-management  # Match the pods labeled with app: chat-user-management
